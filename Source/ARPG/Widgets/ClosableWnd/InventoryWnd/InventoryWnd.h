@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "ARPG.h"
@@ -20,6 +18,8 @@ private :
 private :
 	struct FPlayerInfo* PlayerInfo;
 
+	class UPlayerInventoryComponent* PlayerInventory;
+
 private :
 	class UGridPanel* GridPanel_Content;
 
@@ -34,10 +34,17 @@ protected :
 	virtual void NativeOnInitialized() override;
 
 private :
-	// 인벤토리 창을 초기화합니다.
-	void InitializeInventoryWnd();
-
 	// 빈 슬롯을 생성합니다.
-	void CreateSlot();
+	void CreateItemSlot();
 
+public :
+	// 인벤토리 창을 초기화합니다.
+	void InitializeInventoryWnd(class UPlayerInventoryComponent* playerInventory);
+
+	// 인벤토리 슬롯들을 갱신합니다.
+	void UpdateInventorySlots();
+
+public :
+	FORCEINLINE class UPlayerInventoryComponent* GetPlayerInventoryComponent() const
+	{ return PlayerInventory; }
 };

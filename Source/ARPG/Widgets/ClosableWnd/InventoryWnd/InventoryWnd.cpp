@@ -2,11 +2,10 @@
 #include "Widgets/ClosableWnd/InventoryWnd/ItemSlot/ItemSlot.h"
 
 #include "Components/GridPanel.h"
+#include "Components/PlayerInventory/PlayerInventoryComponent.h"
 
 #include "Single/GameInstance/ARPGGameInstance.h"
 #include "Single/PlayerManager/PlayerManager.h"
-
-#include "Structures/PlayerInfo/PlayerInfo.h"
 
 UInventoryWnd::UInventoryWnd(const FObjectInitializer& ObjInitializer) :
 	Super(ObjInitializer)
@@ -27,19 +26,9 @@ void UInventoryWnd::NativeOnInitialized()
 	PlayerInfo = playerManager->GetPlayerInfo();
 
 	GridPanel_Content = Cast<UGridPanel>(GetWidgetFromName(TEXT("GridPanel_Content")));
-
-	InitializeInventoryWnd();
 }
 
-void UInventoryWnd::InitializeInventoryWnd()
-{
-	for (int32 i = 0; i < PlayerInfo->InventorySlotCount; ++i)
-	{ 
-		CreateSlot();
-	}
-}
-
-void UInventoryWnd::CreateSlot()
+void UInventoryWnd::CreateItemSlot()
 {
 	// 슬롯 위젯을 생성합니다.
 	UItemSlot* newItemSlot = CreateWidget<UItemSlot>(this, BP_ItemSlotClass);
@@ -63,4 +52,20 @@ void UInventoryWnd::CreateSlot()
 	// 배열에 추가합니다.
 	InventorySlots.Add(newItemSlot);
 
+}
+
+void UInventoryWnd::InitializeInventoryWnd(UPlayerInventoryComponent* playerInventory)
+{
+	PlayerInventory = playerInventory;
+
+	for (int32 i = 0; i < PlayerInfo->InventorySlotCount; ++i)
+		CreateItemSlot();
+
+	UpdateInventorySlots();
+}
+
+void UInventoryWnd::UpdateInventorySlots()
+{
+	for (auto slot : InventorySlots)
+		slot->UpdateItemSlot();
 }

@@ -23,7 +23,7 @@ public :
 
 protected :
 	// 피해를 입었을 경우 호출될 메서드
-	UFUNCTION()
+	//UFUNCTION()
 	virtual void OnTakeDamage(
 		AActor* DamagedActor, 
 		float Damage, 

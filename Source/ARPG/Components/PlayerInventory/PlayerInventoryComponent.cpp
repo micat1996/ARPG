@@ -8,6 +8,7 @@
 #include "Components/ClosableWndController/ClosableWndControllerComponent.h"
 
 #include "Widgets/ClosableWnd/InventoryWnd/InventoryWnd.h"
+#include "Widgets/CLosableWnd/InventoryWnd/ItemSlot/ItemSlot.h"
 
 #include "Single/GameInstance/ARPGGameInstance.h"
 #include "Single/PlayerManager/PlayerManager.h"
@@ -33,7 +34,10 @@ UPlayerInventoryComponent::UPlayerInventoryComponent()
 void UPlayerInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
 	InitializeEquipItems();
+	InitializeInventoryItems();
+
 	ClosableWndController = GetManager(UPlayerManager)->GetPlayerController()->
 		GetClosableWndControllerComponent();
 }
@@ -55,10 +59,27 @@ void UPlayerInventoryComponent::InitializeEquipItems()
 	EquipItems.Add(EEquipItemType::EI_Weapon,	TEXT("16000"));
 }
 
+void UPlayerInventoryComponent::InitializeInventoryItems()
+{
+	UPlayerManager* playerManager = GetManager(UPlayerManager);
+	FPlayerInfo * playerInfo = playerManager->GetPlayerInfo();
+
+	for (int32 i = 0; i < playerInfo->InventorySlotCount; ++i)
+		InventoryItems.Add(FItemSlotInfo());
+
+
+	//  -- TEST CODE --
+	InventoryItems[0] = FItemSlotInfo(FName(TEXT("20000")), 11);
+	InventoryItems[5] = FItemSlotInfo(FName(TEXT("20005")), 7);
+}
+
 void UPlayerInventoryComponent::OpenInventory()
 {
 	// 인벤토리 창 위젯을 생성합니다.
 	InventoryWnd = ClosableWndController->AddWnd<UInventoryWnd>(BPInventoryWndClass);
+
+	// 인벤토리 컴포넌트를 설정합니다.
+	InventoryWnd->InitializeInventoryWnd(this);
 }
 
 void UPlayerInventoryComponent::CloseInventory()
@@ -142,5 +163,8 @@ EReinforceResult UPlayerInventoryComponent::TryReinforce(EEquipItemType itemType
 
 void UPlayerInventoryComponent::SwapItem(UItemSlot* firstItemSlot, UItemSlot* secondItemSlot)
 {
+	auto tempItemInfo = firstItemSlot->GetItemSlotInfo();
+	firstItemSlot->SetItemSlotInfo(secondItemSlot->GetItemSlotInfo());
+	secondItemSlot->SetItemSlotInfo(tempItemInfo);
 }
 
