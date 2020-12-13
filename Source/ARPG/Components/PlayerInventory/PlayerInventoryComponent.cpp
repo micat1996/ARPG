@@ -166,5 +166,8 @@ void UPlayerInventoryComponent::SwapItem(UItemSlot* firstItemSlot, UItemSlot* se
 	auto tempItemInfo = firstItemSlot->GetItemSlotInfo();
 	firstItemSlot->SetItemSlotInfo(secondItemSlot->GetItemSlotInfo());
 	secondItemSlot->SetItemSlotInfo(tempItemInfo);
+
+	firstItemSlot->UpdateItemSlot();
+	secondItemSlot->UpdateItemSlot();
 }
 

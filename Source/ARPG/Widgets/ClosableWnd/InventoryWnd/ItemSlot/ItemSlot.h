@@ -19,6 +19,11 @@ private :
 
 	class UDataTable* DT_ItemInfo;
 
+	class UTexture2D* EmptyTexture;
+
+	FLinearColor NormalSlotColor;
+	FLinearColor DraggingSlotColor;
+
 private :
 	// 부모 위젯
 	class UInventoryWnd* InventoryWnd;
@@ -53,9 +58,6 @@ protected :
 
 	// 드래그중 드래그 취소시 호출되는 메서드
 	virtual void NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
-
-	// 드래그중 위젯에 마우스가 들어왔을 때 호출되는 메서드
-	virtual void NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 
 	// 드래그가 끝났을 때 호출되는 메서드
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;

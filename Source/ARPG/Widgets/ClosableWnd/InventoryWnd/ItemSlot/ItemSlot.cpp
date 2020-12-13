@@ -27,6 +27,14 @@ UItemSlot::UItemSlot(const FObjectInitializer& ObjectInitializer)
 		TEXT("DataTable'/Game/Resources/DataTables/DT_ItemInfo.DT_ItemInfo'"));
 	if (DT_ITEM_INFO.Succeeded()) DT_ItemInfo = DT_ITEM_INFO.Object;
 	else { UE_LOG(LogTemp, Error, TEXT("ItemSlot.cpp :: %d LINE :: DT_ITEM_INFO is not loaded"), __LINE__); }
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> T_EMPTY_TEXTURE(
+		TEXT("Texture2D'/Game/Resources/UIImage/ItemSlot/empty.empty'"));
+	if (T_EMPTY_TEXTURE.Succeeded()) EmptyTexture = T_EMPTY_TEXTURE.Object;
+	else { UE_LOG(LogTemp, Error, TEXT("ItemSlot.cpp :: %d LINE :: T_EMPTY_TEXTURE is not loaded"), __LINE__); }
+
+	NormalSlotColor = FLinearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	DraggingSlotColor = FLinearColor(0.15f, 0.15f, 0.15f, 1.f);
 }
 
 
@@ -41,12 +49,20 @@ void UItemSlot::NativeOnInitialized()
 FReply UItemSlot::NativeOnMouseButtonDown(
 	const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	FReply retVal = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 
 
-	// 드래그 앤 드롭 작업을 생성하며, 작업 결과를 반환합니다.
-	return UWidgetBlueprintLibrary::DetectDragIfPressed(
-		InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
+	if (GetItemSlotInfo().IsEmpty())
+		return retVal;
+	else
+	{
+		// 드래깅 색상으로 변경합니다.
+		Image_ItemSprite->SetBrushTintColor(DraggingSlotColor);
+
+		// 드래그 앤 드롭 작업을 생성하며, 작업 결과를 반환합니다.
+		return UWidgetBlueprintLibrary::DetectDragIfPressed(
+			InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
+	}
 }
 
 void UItemSlot::NativeOnDragDetected(
@@ -65,8 +81,15 @@ void UItemSlot::NativeOnDragDetected(
 		// 피벗을 설정합니다.
 		dragDropOp->Pivot = EDragPivot::CenterCenter;
 
+		// 드래그 앤 드랍시 보여질 위젯을 생성합니다.
+		UUserWidget* dragVisual = CreateWidget<UUserWidget>(this, ItemSlotWidgetClass);
+
 		// 드래그 앤 드랍시 보여질 위젯을 설정합니다.
-		dragDropOp->DefaultDragVisual = CreateWidget<UUserWidget>(this, ItemSlotWidgetClass);
+		dragDropOp->DefaultDragVisual = dragVisual;
+
+		// 드래그 앤 드랍시 보여질 이미지를 설정합니다.
+		Cast<UImage>(dragVisual->GetWidgetFromName(TEXT("Image_DragItem")))->SetBrushFromTexture(
+			Cast<UTexture2D>(Image_ItemSprite->Brush.GetResourceObject()) );
 
 		// 드래깅을 시작한 슬롯을 설정합니다.
 		dragDropOp->DraggingSlot = this;
@@ -79,11 +102,9 @@ void UItemSlot::NativeOnDragDetected(
 void UItemSlot::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	Super::NativeOnDragCancelled(InDragDropEvent, InOperation);
-}
 
-void UItemSlot::NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
-{
-	Super::NativeOnDragEnter(InGeometry, InDragDropEvent, InOperation);
+	// 기본 색상으로 변경합니다.
+	Image_ItemSprite->SetBrushTintColor(NormalSlotColor);
 }
 
 bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
@@ -104,7 +125,7 @@ void UItemSlot::UpdateItemSlot()
 
 	if (itemSlotInfo.IsEmpty())
 	{
-		Image_ItemSprite->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.f));
+		Image_ItemSprite->SetBrushFromTexture(EmptyTexture);
 		Text_ItemCount->SetText(FText::FromString(TEXT("")));
 	}
 	else
@@ -113,12 +134,16 @@ void UItemSlot::UpdateItemSlot()
 		FItemInfo * itemInfo = DT_ItemInfo->FindRow<FItemInfo>(
 			itemSlotInfo.ItemCode, contextString);
 
+		// 아이템 이미지를 로드합니다.
 		UARPGGameInstance* gameInst = Cast<UARPGGameInstance>(GetGameInstance());
 		UTexture2D * itemImage = Cast<UTexture2D>(gameInst->GetStreamableManager()->
 			LoadSynchronous(itemInfo->ItemSpritePath));
 
+		// 이미지를 설정합니다.
 		Image_ItemSprite->SetBrushFromTexture(itemImage);
-		Image_ItemSprite->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+
+		// 기본 색상으로 변경합니다.
+		Image_ItemSprite->SetBrushTintColor(NormalSlotColor);
 
 		Text_ItemCount->SetText(FText::FromString(
 			FString::FromInt(itemSlotInfo.ItemCount) ));
