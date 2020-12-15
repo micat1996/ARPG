@@ -33,6 +33,8 @@ public :
 protected :
 	virtual void NativeOnInitialized() override;
 
+	virtual void NativeConstruct() override;
+
 private :
 	// ºó ½½·ÔÀ» »ý¼ºÇÕ´Ï´Ù.
 	void CreateItemSlot();

@@ -8,9 +8,16 @@
 void UClosableWnd::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+}
+
+void UClosableWnd::NativeConstruct()
+{
+
+	Super::NativeConstruct();
 
 	// 창 크기를 설정합니다.
 	WndSize = FVector2D(1920.0f, 1080.0f);
+	UpdateWndSize();
 
 	// 종료 버튼을 설정합니다.
 	SetCloseButton(Cast<UButton>(GetWidgetFromName(TEXT("Button_Close"))));
@@ -31,10 +38,6 @@ UClosableWnd* UClosableWnd::CreateChildClosableWnd(TSubclassOf<UClosableWnd> clo
 	{
 		UE_LOG(LogTemp, Error, TEXT("ClosableWndController is nullptr"));
 		return nullptr;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ClosableWndController is not nullptr"));
 	}
 
 	// 자식 창을 생성합니다.

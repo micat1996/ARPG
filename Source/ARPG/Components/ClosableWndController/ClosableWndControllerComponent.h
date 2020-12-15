@@ -37,7 +37,7 @@ public :
 		// 창 객체를 생성합니다.
 		T * wndInst = Cast<T>(CreateWidget<UClosableWnd>(PlayerController, wndCls));
 
-		wndInst->SetClosableWndContorller(this);
+		wndInst->SetClosableWndContorllerComponent(this);
 
 		// 배열에 추가합니다.
 		AllocatedWnds.Add(wndInst);

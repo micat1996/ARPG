@@ -15,7 +15,8 @@ class ARPG_API UItemSlot : public UUserWidget
 	GENERATED_BODY()
 	
 private :
-	TSubclassOf<UUserWidget> ItemSlotWidgetClass;
+	TSubclassOf<UUserWidget> ItemDraggingWidgetClass;
+	TSubclassOf<class UItemDetailWnd> ItemDetailWndClass;
 
 	class UDataTable* DT_ItemInfo;
 
@@ -28,8 +29,14 @@ private :
 	// 부모 위젯
 	class UInventoryWnd* InventoryWnd;
 
+	// 아이템 디테일 창
+	UPROPERTY()
+	class UItemDetailWnd* ItemDetailWnd;
+
 	class UImage* Image_ItemSprite;
 	class UTextBlock* Text_ItemCount;
+
+
 
 	// 인벤토리 슬롯 인덱스
 	UPROPERTY()
@@ -62,6 +69,11 @@ protected :
 	// 드래그가 끝났을 때 호출되는 메서드
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 
+	// 마우스와 위젯의 겹침이 시작될 때 호출되는 메서드
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);
+
+	// 마우스와 위젯의 겹침이 끝났을 때 호출되는 메서드
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent);
 
 public :
 	// 아이템 슬롯을 갱신합니다.

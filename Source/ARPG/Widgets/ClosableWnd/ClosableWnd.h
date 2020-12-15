@@ -40,15 +40,17 @@ protected :
 protected :
 	virtual void NativeOnInitialized() override;
 
+	virtual void NativeConstruct() override;
+
 public :
 	void SetCloseButton(class UButton* closeButton);
 
-protected :
 	// 자식 창을 생성합니다.
 	/// - 생성된 창을 반환됩니다.
 	UFUNCTION(BlueprintCallable)
 	UClosableWnd * CreateChildClosableWnd(TSubclassOf<UClosableWnd> closableWnd);
 
+protected :
 	// 특정한 창이 할당되어있는지 확인합니다.
 	UFUNCTION(BlueprintCallable)
 	bool IsAllocated(UClosableWnd* childwnd);
@@ -63,8 +65,11 @@ private :
 	void OnCloseButtonClicked();
 
 public :
-	FORCEINLINE void SetClosableWndContorller(class UClosableWndControllerComponent* closableWndController)
+	FORCEINLINE void SetClosableWndContorllerComponent(class UClosableWndControllerComponent* closableWndController)
 	{ ClosableWndController = closableWndController; }
+
+	FORCEINLINE class UClosableWndControllerComponent* GetClosableWndControllerComponent() const
+	{ return ClosableWndController; }
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateWndSize();

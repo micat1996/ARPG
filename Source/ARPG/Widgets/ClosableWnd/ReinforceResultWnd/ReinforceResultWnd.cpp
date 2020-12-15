@@ -13,6 +13,12 @@ void UReinforceResultWnd::NativeOnInitialized()
 	Text_Result = Cast<UTextBlock>(GetWidgetFromName(TEXT("Text_Result")));
 }
 
+void UReinforceResultWnd::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+}
+
 
 void UReinforceResultWnd::SetReinforceResult(EReinforceResult result)
 {

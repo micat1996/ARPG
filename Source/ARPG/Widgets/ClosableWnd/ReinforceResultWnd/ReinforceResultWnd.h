@@ -22,6 +22,8 @@ private :
 protected :
 	virtual void NativeOnInitialized() override;
 
+	virtual void NativeConstruct() override;
+
 public :
 	UFUNCTION(BlueprintCallable)
 	void SetReinforceResult(EReinforceResult result);

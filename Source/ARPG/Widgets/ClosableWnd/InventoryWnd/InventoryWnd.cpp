@@ -4,6 +4,8 @@
 #include "Components/GridPanel.h"
 #include "Components/PlayerInventory/PlayerInventoryComponent.h"
 
+
+
 #include "Single/GameInstance/ARPGGameInstance.h"
 #include "Single/PlayerManager/PlayerManager.h"
 
@@ -26,6 +28,19 @@ void UInventoryWnd::NativeOnInitialized()
 	PlayerInfo = playerManager->GetPlayerInfo();
 
 	GridPanel_Content = Cast<UGridPanel>(GetWidgetFromName(TEXT("GridPanel_Content")));
+
+
+}
+
+void UInventoryWnd::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	// 창 크기를 설정합니다.
+	WndSize = FVector2D(500.0f, 600.0f);
+	UpdateWndSize();
+
+	UE_LOG(LogTemp, Warning, TEXT("Open Inventory!"));
 }
 
 void UInventoryWnd::CreateItemSlot()

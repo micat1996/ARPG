@@ -2,26 +2,34 @@
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
+
+#include "Components/ClosableWndController/ClosableWndControllerComponent.h"
 #include "Components/PlayerInventory/PlayerInventoryComponent.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Components/CanvasPanelSlot.h"
 
 #include "Widgets/ClosableWnd/InventoryWnd/InventoryWnd.h"
+#include "Widgets/ClosableWnd/InventoryWnd/ItemDetailWnd/ItemDetailWnd.h"
 #include "Widgets/ClosableWnd/InventoryWnd/ItemSlot/ItemSlotDragDropOperation.h"
+
 
 #include "Single/GameInstance/ARPGGameInstance.h"
 
 #include "Structures/ItemInfo/ItemInfo.h"
-
-
 
 UItemSlot::UItemSlot(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> BP_ITEM_SLOT(
 		TEXT("WidgetBlueprint'/Game/Resources/Blueprints/Widgets/ClosableWnd/DraggableWidget/InventoryWnd/BP_DragItemImage.BP_DragItemImage_C'"));
-	if (BP_ITEM_SLOT.Succeeded()) ItemSlotWidgetClass = BP_ITEM_SLOT.Class;
+	if (BP_ITEM_SLOT.Succeeded()) ItemDraggingWidgetClass = BP_ITEM_SLOT.Class;
 	else { UE_LOG(LogTemp, Error, TEXT("ItemSlot.cpp :: %d LINE :: BP_ITEM_SLOT is not loaded"), __LINE__); }
+
+	static ConstructorHelpers::FClassFinder<UItemDetailWnd> BP_ITEM_DETAIL_WND(
+		TEXT("WidgetBlueprint'/Game/Resources/Blueprints/Widgets/ClosableWnd/DraggableWidget/InventoryWnd/BP_ItemDetailWnd.BP_ItemDetailWnd_C'"));
+	if (BP_ITEM_DETAIL_WND.Succeeded()) ItemDetailWndClass = BP_ITEM_DETAIL_WND.Class;
+	else { UE_LOG(LogTemp, Error, TEXT("ItemSlot.cpp :: %d LINE :: BP_ITEM_DETAIL_WND is not loaded"), __LINE__); }
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_ITEM_INFO(
 		TEXT("DataTable'/Game/Resources/DataTables/DT_ItemInfo.DT_ItemInfo'"));
@@ -56,9 +64,6 @@ FReply UItemSlot::NativeOnMouseButtonDown(
 		return retVal;
 	else
 	{
-		// 드래깅 색상으로 변경합니다.
-		Image_ItemSprite->SetBrushTintColor(DraggingSlotColor);
-
 		// 드래그 앤 드롭 작업을 생성하며, 작업 결과를 반환합니다.
 		return UWidgetBlueprintLibrary::DetectDragIfPressed(
 			InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
@@ -78,11 +83,14 @@ void UItemSlot::NativeOnDragDetected(
 
 	if (IsValid(dragDropOp))
 	{
+		// 드래깅 색상으로 변경합니다.
+		Image_ItemSprite->SetBrushTintColor(DraggingSlotColor);
+
 		// 피벗을 설정합니다.
 		dragDropOp->Pivot = EDragPivot::CenterCenter;
 
 		// 드래그 앤 드랍시 보여질 위젯을 생성합니다.
-		UUserWidget* dragVisual = CreateWidget<UUserWidget>(this, ItemSlotWidgetClass);
+		UUserWidget* dragVisual = CreateWidget<UUserWidget>(this, ItemDraggingWidgetClass);
 
 		// 드래그 앤 드랍시 보여질 위젯을 설정합니다.
 		dragDropOp->DefaultDragVisual = dragVisual;
@@ -117,6 +125,53 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 	playerInventory->SwapItem(this, dragDropOp->DraggingSlot);
 
 	return retVal;
+}
+
+void UItemSlot::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
+
+	if (!IsValid(ItemDetailWnd))
+	{
+		ItemDetailWnd = Cast<UItemDetailWnd>(InventoryWnd->CreateChildClosableWnd(ItemDetailWndClass));
+
+		
+
+		UCanvasPanelSlot* ItemDetailWndPanelSlot = Cast<UCanvasPanelSlot>(ItemDetailWnd->Slot);
+
+		//ItemDetailWndPanelSlot->SetAnchors(FAnchors)
+		ItemDetailWndPanelSlot->SetPosition(
+
+			// 해당 위젯의 위치
+			InGeometry.Position +
+
+			FVector2D(32.0f, 96.0f) + 
+
+			// 인벤토리 창의 위치
+			Cast<UCanvasPanelSlot>(InventoryWnd->Slot)->GetPosition());
+
+
+		//ItemDetailWndPanelSlot->SetPosition(FVector2D(500.0f, 500.0f));
+
+		//UCanvasPanelSlot* ItemSlotPanelSlot = Cast<UCanvasPanelSlot>(Slot);
+		//
+		//UE_LOG(LogTemp, Warning, TEXT("ItemDetailWndPanelSlot is null ? = %d"),
+		//	(!IsValid(ItemDetailWndPanelSlot)));
+		//
+		//UE_LOG(LogTemp, Warning, TEXT("ItemSlotPanelSlot is null ? = %d"),
+		//	(!IsValid(ItemSlotPanelSlot)));
+	}
+}
+
+void UItemSlot::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseLeave(InMouseEvent);
+
+	if (IsValid(ItemDetailWnd))
+	{
+		InventoryWnd->GetClosableWndControllerComponent()->CloseWnd(false, ItemDetailWnd);
+		ItemDetailWnd = nullptr;
+	}
 }
 
 void UItemSlot::UpdateItemSlot()
