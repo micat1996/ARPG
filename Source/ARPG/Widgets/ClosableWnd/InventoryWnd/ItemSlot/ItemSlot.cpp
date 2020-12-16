@@ -18,6 +18,7 @@
 
 #include "Structures/ItemInfo/ItemInfo.h"
 
+#include "Blueprint/WidgetLayoutLibrary.h"
 UItemSlot::UItemSlot(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -135,31 +136,11 @@ void UItemSlot::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEv
 	{
 		ItemDetailWnd = Cast<UItemDetailWnd>(InventoryWnd->CreateChildClosableWnd(ItemDetailWndClass));
 
-		
-
-		UCanvasPanelSlot* ItemDetailWndPanelSlot = Cast<UCanvasPanelSlot>(ItemDetailWnd->Slot);
-
-		//ItemDetailWndPanelSlot->SetAnchors(FAnchors)
-		ItemDetailWndPanelSlot->SetPosition(
-
-			// 해당 위젯의 위치
-			InGeometry.Position +
-
-			FVector2D(32.0f, 96.0f) + 
-
-			// 인벤토리 창의 위치
-			Cast<UCanvasPanelSlot>(InventoryWnd->Slot)->GetPosition());
-
-
-		//ItemDetailWndPanelSlot->SetPosition(FVector2D(500.0f, 500.0f));
-
-		//UCanvasPanelSlot* ItemSlotPanelSlot = Cast<UCanvasPanelSlot>(Slot);
-		//
-		//UE_LOG(LogTemp, Warning, TEXT("ItemDetailWndPanelSlot is null ? = %d"),
-		//	(!IsValid(ItemDetailWndPanelSlot)));
-		//
-		//UE_LOG(LogTemp, Warning, TEXT("ItemSlotPanelSlot is null ? = %d"),
-		//	(!IsValid(ItemSlotPanelSlot)));
+		// 디테일 창 위치를 설정합니다.
+		Cast<UCanvasPanelSlot>(ItemDetailWnd->Slot)->SetPosition(
+			InGeometry.GetAbsolutePosition() + (InGeometry.GetAbsoluteSize() * 0.5f));
+		/// - GetAbsolutePosition() 해당 위젯의 절대 위치를 반환합니다.
+		/// - GetAbsoluteSize() 해당 위젯의 절대 크기를 반환합니다.
 	}
 }
 
