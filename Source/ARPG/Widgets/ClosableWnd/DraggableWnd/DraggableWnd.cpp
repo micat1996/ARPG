@@ -5,12 +5,12 @@
 #include "Widgets/DraggableWidget/DraggableWndTitle/DraggableWndTitle.h"
 
 
-void UDraggableWnd::NativeOnInitialized()
+void UDraggableWnd::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
 
 	// 창 크기 설정
-	WndSize = FVector2D(500.0f, 600.0f);
+	UpdateWndSize(500.0f, 600.0f);
 
 	BP_DraggableWndTitle = Cast<UDraggableWndTitle>(
 		GetWidgetFromName(TEXT("BP_DraggableWndTitle")));

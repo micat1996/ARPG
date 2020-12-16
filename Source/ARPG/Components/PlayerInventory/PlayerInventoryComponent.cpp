@@ -7,8 +7,8 @@
 
 #include "Components/ClosableWndController/ClosableWndControllerComponent.h"
 
-#include "Widgets/ClosableWnd/InventoryWnd/InventoryWnd.h"
-#include "Widgets/CLosableWnd/InventoryWnd/ItemSlot/ItemSlot.h"
+#include "Widgets/ClosableWnd/DraggableWnd/InventoryWnd/InventoryWnd.h"
+#include "Widgets/ClosableWnd/DraggableWnd/InventoryWnd/ItemSlot/ItemSlot.h"
 
 #include "Single/GameInstance/ARPGGameInstance.h"
 #include "Single/PlayerManager/PlayerManager.h"

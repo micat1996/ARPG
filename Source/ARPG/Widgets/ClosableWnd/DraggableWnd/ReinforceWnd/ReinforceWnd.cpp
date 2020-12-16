@@ -3,9 +3,11 @@
 #include "Widgets/ClosableWnd/DraggableWnd/ReinforceWnd/ReinforceWndRow.h"
 
 
-void UReinforceWnd::NativeOnInitialized()
+void UReinforceWnd::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
+
+	UpdateWndSize(700.0f, 600.0f);
 
 	Cast<UReinforceWndRow>(GetWidgetFromName(TEXT("BP_Reinforce_Head")))->SetReinforceWnd(this);
 	Cast<UReinforceWndRow>(GetWidgetFromName(TEXT("BP_Reinforce_Mask")))->SetReinforceWnd(this);

@@ -9,9 +9,9 @@
 #include "Components/TextBlock.h"
 #include "Components/CanvasPanelSlot.h"
 
-#include "Widgets/ClosableWnd/InventoryWnd/InventoryWnd.h"
-#include "Widgets/ClosableWnd/InventoryWnd/ItemDetailWnd/ItemDetailWnd.h"
-#include "Widgets/ClosableWnd/InventoryWnd/ItemSlot/ItemSlotDragDropOperation.h"
+#include "Widgets/ClosableWnd/DraggableWnd/InventoryWnd/InventoryWnd.h"
+#include "Widgets/ClosableWnd/DraggableWnd/InventoryWnd/ItemDetailWnd/ItemDetailWnd.h"
+#include "Widgets/ClosableWnd/DraggableWnd/InventoryWnd/ItemSlot/ItemSlotDragDropOperation.h"
 
 
 #include "Single/GameInstance/ARPGGameInstance.h"
@@ -132,15 +132,22 @@ void UItemSlot::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEv
 {
 	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
 
+	// 아이템 슬롯이 비어있다면 디테일 창을 표시하지 않습니다.
+	if (GetItemSlotInfo().IsEmpty()) return;
+
 	if (!IsValid(ItemDetailWnd))
 	{
+		// 아이템 디테일 창 생성
 		ItemDetailWnd = Cast<UItemDetailWnd>(InventoryWnd->CreateChildClosableWnd(ItemDetailWndClass));
+
+		// 아이템 디테일 창 갱신
+		ItemDetailWnd->UpdateDetailWnd(DT_ItemInfo, GetItemSlotInfo().ItemCode);
 
 		// 디테일 창 위치를 설정합니다.
 		Cast<UCanvasPanelSlot>(ItemDetailWnd->Slot)->SetPosition(
 			InGeometry.GetAbsolutePosition() + (InGeometry.GetAbsoluteSize() * 0.5f));
-		/// - GetAbsolutePosition() 해당 위젯의 절대 위치를 반환합니다.
-		/// - GetAbsoluteSize() 해당 위젯의 절대 크기를 반환합니다.
+		/// - GetAbsolutePosition() : 해당 위젯의 절대 위치를 반환합니다.
+		/// - GetAbsoluteSize() : 해당 위젯의 절대 크기를 반환합니다.
 	}
 }
 

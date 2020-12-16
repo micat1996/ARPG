@@ -1,5 +1,5 @@
 #include "InventoryWnd.h"
-#include "Widgets/ClosableWnd/InventoryWnd/ItemSlot/ItemSlot.h"
+#include "Widgets/ClosableWnd/DraggableWnd/InventoryWnd/ItemSlot/ItemSlot.h"
 
 #include "Components/GridPanel.h"
 #include "Components/PlayerInventory/PlayerInventoryComponent.h"
@@ -37,10 +37,7 @@ void UInventoryWnd::NativeConstruct()
 	Super::NativeConstruct();
 
 	// 창 크기를 설정합니다.
-	WndSize = FVector2D(500.0f, 600.0f);
-	UpdateWndSize();
-
-	UE_LOG(LogTemp, Warning, TEXT("Open Inventory!"));
+	UpdateWndSize(500.0f, 600.0f);
 }
 
 void UInventoryWnd::CreateItemSlot()

@@ -76,8 +76,5 @@ void UClosableWndControllerComponent::SetHighestPriorityWnd(UClosableWnd* closab
 	{
 		// 위젯을 재등록합니다.
 		playerCharacterWidget->GetClosableWnds()->AddChild(closableWndInstance);
-
-		// 크기를 조절합니다.
-		closableWndInstance->UpdateWndSize();
 	}
 }

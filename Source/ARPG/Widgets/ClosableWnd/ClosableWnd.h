@@ -72,6 +72,6 @@ public :
 	{ return ClosableWndController; }
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateWndSize();
+	void UpdateWndSize(float width, float height);
 
 };

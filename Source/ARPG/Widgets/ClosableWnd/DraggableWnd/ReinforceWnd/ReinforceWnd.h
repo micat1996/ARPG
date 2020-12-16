@@ -16,7 +16,7 @@ class ARPG_API UReinforceWnd : public UDraggableWnd
 	GENERATED_BODY()
 
 protected :
-	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 
 public :
 	// 강화를 끝냈을 때 호출되는 블루프린트 이벤트입니다.

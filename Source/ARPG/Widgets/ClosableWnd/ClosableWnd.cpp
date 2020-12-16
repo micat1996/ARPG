@@ -16,8 +16,7 @@ void UClosableWnd::NativeConstruct()
 	Super::NativeConstruct();
 
 	// 창 크기를 설정합니다.
-	WndSize = FVector2D(1920.0f, 1080.0f);
-	UpdateWndSize();
+	UpdateWndSize(1920.0f, 1080.0f);
 
 	// 종료 버튼을 설정합니다.
 	SetCloseButton(Cast<UButton>(GetWidgetFromName(TEXT("Button_Close"))));
@@ -84,7 +83,8 @@ void UClosableWnd::OnCloseButtonClicked()
 		/*closableWndInstanceToClose :	*/	this);
 }
 
-void UClosableWnd::UpdateWndSize()
+void UClosableWnd::UpdateWndSize(float width, float height)
 {
+	WndSize = FVector2D(width, height);
 	Cast<UCanvasPanelSlot>(Slot)->SetSize(WndSize);
 }

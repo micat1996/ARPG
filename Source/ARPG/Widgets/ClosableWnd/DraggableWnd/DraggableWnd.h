@@ -18,6 +18,6 @@ private :
 	class UDraggableWndTitle* BP_DraggableWndTitle;
 
 protected :
-	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 	
 };
