@@ -1,6 +1,8 @@
 #include "ClosableDialogWnd.h"
 
 #include "Actors/Characters/InteratableNpc/InteractableNpc.h"
+
+
 #include "Components/Button.h"
 
 void UClosableDialogWnd::SetOwnerNpc(AInteractableNpc* ownerNpc)
@@ -11,4 +13,9 @@ void UClosableDialogWnd::SetOwnerNpc(AInteractableNpc* ownerNpc)
 	if (IsValid(CloseButton))
 		CloseButton->OnClicked.AddDynamic(OwnerNpc, &AInteractableNpc::FinishInteraction);
 
+}
+
+void UClosableDialogWnd::OpenShop(FName shopID)
+{
+	OwnerNpc->OpenShop(shopID);
 }

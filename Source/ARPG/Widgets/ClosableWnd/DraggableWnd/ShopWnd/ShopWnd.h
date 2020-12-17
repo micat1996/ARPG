@@ -2,20 +2,26 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Widgets/ClosableWnd/ClosableWnd.h"
+#include "ARPG.h"
+#include "Widgets/ClosableWnd/DraggableWnd/DraggableWnd.h"
+#include "Enums/ShopItemType.h"
 #include "ShopWnd.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ARPG_API UShopWnd : public UClosableWnd
+class ARPG_API UShopWnd : public UDraggableWnd
 {
 	GENERATED_BODY()
 	
 private :
-	//TSubclassOf<class USaleItem> SaleItemClass;
+	class UDataTable * DT_ShopInfo;
+
+	TSubclassOf<class USaleItem> SaleItemClass;
+
+private :
+	class UScrollBox* ScrollBox_SaleList;
 
 
 protected :
@@ -30,6 +36,8 @@ protected :
 
 private :
 	void InitializeSaleList();
+
+	void AddItem(EShopItemType shopItemType, FName itemCode, int32 itemCount = 1);
 
 
 };

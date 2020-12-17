@@ -22,5 +22,9 @@ private :
 public :
 	// 창 소유자를 설정합니다.
 	void SetOwnerNpc(class AInteractableNpc* ownerNpc);
+
+	// 상점을 엽니다.
+	UFUNCTION(BlueprintCallable)
+	void OpenShop(FName shopID);
 	
 };

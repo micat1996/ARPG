@@ -3,13 +3,26 @@
 #include "Single/GameInstance/ARPGGameInstance.h"
 #include "Single/PlayerManager/PlayerManager.h"
 
+#include "Structures/ShopInfo/ShopInfo.h"
+
 #include "Widgets/ClosableWnd/ClosableDialogWnd/ClosableDialogWnd.h"
+#include "Widgets/ClosableWnd/DraggableWnd/ShopWnd/ShopWnd.h"
 
 #include "Components/ClosableWndController/ClosableWndControllerComponent.h"
 
 
 AInteractableNpc::AInteractableNpc()
 {
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_SHOP_INFO(
+		TEXT("DataTable'/Game/Resources/DataTables/DT_ShopInfo.DT_ShopInfo'"));
+	if (DT_SHOP_INFO.Succeeded()) DT_ShopInfo = DT_SHOP_INFO.Object;
+	else { UE_LOG(LogTemp, Error, TEXT("ClosableDialogWnd.cpp :: %d LINE :: DT_SHOP_INFO is not loaded!"), __LINE__); }
+
+	static ConstructorHelpers::FClassFinder<UShopWnd> BP_SHOP_WND(
+		TEXT("WidgetBlueprint'/Game/Resources/Blueprints/Widgets/ClosableWnd/DraggableWidget/ShopWnd/BP_ShopWnd.BP_ShopWnd_C'"));
+	if (BP_SHOP_WND.Succeeded()) ShopWndClass = BP_SHOP_WND.Class;
+	else { UE_LOG(LogTemp, Error, TEXT("ClosableDialogWnd.cpp :: %d LINE :: BP_SHOP_WND is not loaded!"), __LINE__); }
+
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SKELETAL_MESH_COMPONENT"));
 	InteractCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("INTERACT_CAMERA"));
 
@@ -68,4 +81,10 @@ void AInteractableNpc::OpenDialogWidget()
 void AInteractableNpc::Interaction()
 {
 	OpenDialogWidget();
+}
+
+void AInteractableNpc::OpenShop(FName shopID)
+{
+	PlayerManager->GetPlayerController()->GetClosableWndControllerComponent()->
+		AddWnd<UShopWnd>(ShopWndClass);
 }
