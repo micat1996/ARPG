@@ -46,7 +46,7 @@ public :
 	virtual void Interaction() override;
 
 	// 상점을 엽니다.
-	void OpenShop(FName shopID);
+	void OpenShop(class UClosableWnd * parentWnd, FName shopID);
 
 	
 };

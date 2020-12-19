@@ -17,5 +17,5 @@ void UClosableDialogWnd::SetOwnerNpc(AInteractableNpc* ownerNpc)
 
 void UClosableDialogWnd::OpenShop(FName shopID)
 {
-	OwnerNpc->OpenShop(shopID);
+	OwnerNpc->OpenShop(this, shopID);
 }

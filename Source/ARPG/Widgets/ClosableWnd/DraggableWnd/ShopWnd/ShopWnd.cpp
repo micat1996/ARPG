@@ -35,13 +35,12 @@ void UShopWnd::NativeConstruct()
 void UShopWnd::InitializeSaleList()
 {
 	AddItem(EShopItemType::SI_SaleItem, FName(TEXT("")));
-	AddItem(EShopItemType::SI_SaleItem, FName(TEXT("")));
 }
 
 void UShopWnd::AddItem(EShopItemType shopItemType, FName itemCode, int32 itemCount)
 {
 	USaleItem * saleItem = CreateWidget<USaleItem>(this, SaleItemClass);
-
-
 	ScrollBox_SaleList->AddChild(saleItem);
+
+	saleItem->InitializeSaleItem(EShopItemType::SI_SaleItem, itemCode, itemCount);
 }

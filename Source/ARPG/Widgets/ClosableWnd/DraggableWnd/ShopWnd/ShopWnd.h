@@ -24,9 +24,6 @@ private :
 	class UScrollBox* ScrollBox_SaleList;
 
 
-protected :
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName ShopID;
 
 public :
 	UShopWnd(const FObjectInitializer& ObjectInitializer);

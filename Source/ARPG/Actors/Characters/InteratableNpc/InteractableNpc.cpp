@@ -83,8 +83,7 @@ void AInteractableNpc::Interaction()
 	OpenDialogWidget();
 }
 
-void AInteractableNpc::OpenShop(FName shopID)
+void AInteractableNpc::OpenShop(class UClosableWnd* parentWnd, FName shopID)
 {
-	PlayerManager->GetPlayerController()->GetClosableWndControllerComponent()->
-		AddWnd<UShopWnd>(ShopWndClass);
+	parentWnd->CreateChildClosableWnd(ShopWndClass);
 }
