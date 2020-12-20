@@ -20,6 +20,9 @@ public:
 	UPROPERTY()
 	int32 InventorySlotCount;
 
+	UPROPERTY()
+	int32 Money;
+
 
 	FPlayerInfo();
 

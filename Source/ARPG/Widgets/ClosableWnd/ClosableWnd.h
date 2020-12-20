@@ -14,7 +14,6 @@ class ARPG_API UClosableWnd : public UUserWidget
 	GENERATED_BODY()
 	
 public :
-	FWndEventSignature onWndOpened;
 	FWndEventSignature onWndClosed;
 
 	// 창 크기를 나타냅니다.
@@ -58,9 +57,9 @@ protected :
 	void RemoveFromParentWnd(UClosableWnd* childWnd);
 
 
-private :
+public :
 	UFUNCTION()
-	void OnCloseButtonClicked();
+	void CloseClosableWnd();
 
 public :
 	FORCEINLINE void SetClosableWndContorllerComponent(class UClosableWndControllerComponent* closableWndController)

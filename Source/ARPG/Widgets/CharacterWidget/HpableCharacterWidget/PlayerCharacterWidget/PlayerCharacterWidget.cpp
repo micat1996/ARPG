@@ -24,9 +24,6 @@ void UPlayerCharacterWidget::AddClosableWnd(UClosableWnd* closableWnd)
 	Canvas_ClosableWnds->AddChild(closableWnd);
 
 	Cast<UCanvasPanelSlot>(closableWnd->Slot)->SetSize(closableWnd->WndSize);
-
-	if (closableWnd->onWndOpened.IsBound())
-		closableWnd->onWndOpened.Broadcast();
 }
 
 void UPlayerCharacterWidget::RemoveClosableWnd(UClosableWnd* closableWnd)

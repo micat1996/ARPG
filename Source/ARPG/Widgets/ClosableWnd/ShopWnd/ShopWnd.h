@@ -7,6 +7,7 @@
 #include "Widgets/ClosableWnd/DraggableWnd/DraggableWnd.h"
 
 #include "Structures/ShopItemInfo/ShopItemInfo.h"
+#include "Structures/ItemInfo/ItemInfo.h"
 
 #include "Enums/ShopItemType.h"
 
@@ -20,10 +21,17 @@ class ARPG_API UShopWnd : public UDraggableWnd
 private :
 	class UDataTable* DT_ItemInfo;
 	TSubclassOf<class USaleItem> SaleItemClass;
+	TSubclassOf<class UShopTradeWnd> ShopTradeWndClass;
+
+
 
 private :
 	class UScrollBox* ScrollBox_SaleList;
 	class UScrollBox* ScrollBox_InventoryItem;
+
+	// 물건 교환 창이 띄워져 있음을 나타냅니다.
+	UPROPERTY()
+	bool bIsTradeWndActivated;
 
 
 public :
@@ -42,5 +50,12 @@ private :
 public :
 	// 상점에서 파는 물건 목록을 초기화합니다.
 	void InitializeSaleList(TArray<FShopItemInfo> saleItems);
+
+	// 물건 교환 창을 띄웁니다.
+	void CreateTradeWnd(EShopItemType shopItemType, FItemInfo itemInfo, int32 costs);
+
+public :
+	FORCEINLINE bool IsTradeWndActivated() const
+	{ return bIsTradeWndActivated; }
 	
 };

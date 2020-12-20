@@ -22,7 +22,7 @@ void UClosableWnd::SetCloseButton(UButton* closeButton)
 
 
 	CloseButton = closeButton;
-	CloseButton->OnClicked.AddDynamic(this, &UClosableWnd::OnCloseButtonClicked);
+	CloseButton->OnClicked.AddDynamic(this, &UClosableWnd::CloseClosableWnd);
 }
 
 UClosableWnd* UClosableWnd::CreateChildClosableWnd(TSubclassOf<UClosableWnd> closableWnd)
@@ -31,10 +31,6 @@ UClosableWnd* UClosableWnd::CreateChildClosableWnd(TSubclassOf<UClosableWnd> clo
 	{
 		UE_LOG(LogTemp, Error, TEXT("ClosableWndController is nullptr"));
 		return nullptr;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ClosableWndController is not nullptr"));
 	}
 
 	// 자식 창을 생성합니다.
@@ -59,8 +55,10 @@ void UClosableWnd::RemoveFromParentWnd(UClosableWnd* childWnd)
 	ChildWnds.Remove(childWnd);
 }
 
-void UClosableWnd::OnCloseButtonClicked()
+void UClosableWnd::CloseClosableWnd()
 {
+	if (onWndClosed.IsBound()) onWndClosed.Broadcast();
+
 	// 부모 창이 존재한다면
 	if (IsValid(ParentWnd))
 	{
@@ -71,6 +69,8 @@ void UClosableWnd::OnCloseButtonClicked()
 	// 모든 자식 창을 제거합니다.
 	for (auto childWnd : ChildWnds)
 	{
+		childWnd->CloseClosableWnd();
+
 		ClosableWndController->CloseWnd(
 			/*bAllClose :					*/	false,
 			/*closableWndInstanceToClose :	*/	childWnd);

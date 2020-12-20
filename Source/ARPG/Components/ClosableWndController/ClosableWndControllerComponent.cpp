@@ -42,6 +42,7 @@ void UClosableWndControllerComponent::CloseWnd(bool bAllClose, UClosableWnd* clo
 
 		PlayerController->GetPlayerCharacterWidgetInstance()->RemoveClosableWnd(
 			closableWndInstanceToClose);
+
 	}
 
 
