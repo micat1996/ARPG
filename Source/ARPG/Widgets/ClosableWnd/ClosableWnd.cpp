@@ -5,14 +5,8 @@
 #include "Components/Button.h"
 
 
-void UClosableWnd::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
-}
-
 void UClosableWnd::NativeConstruct()
 {
-
 	Super::NativeConstruct();
 
 	// 창 크기를 설정합니다.
@@ -37,6 +31,10 @@ UClosableWnd* UClosableWnd::CreateChildClosableWnd(TSubclassOf<UClosableWnd> clo
 	{
 		UE_LOG(LogTemp, Error, TEXT("ClosableWndController is nullptr"));
 		return nullptr;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ClosableWndController is not nullptr"));
 	}
 
 	// 자식 창을 생성합니다.

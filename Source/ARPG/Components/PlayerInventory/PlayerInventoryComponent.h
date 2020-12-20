@@ -1,12 +1,13 @@
 #pragma once
 
 #include "ARPG.h"
-#include "Components/ActorComponent.h"
 
-#include "Structures/ItemSlotInfo/ItemSlotInfo.h"
+#include "Components/ActorComponent.h"
 
 #include "Enums/EquipItemType.h"
 #include "Enums/ReinforceResult.h"
+
+#include "Structures/ItemSlotInfo/ItemSlotInfo.h"
 
 #include "PlayerInventoryComponent.generated.h"
 
@@ -25,7 +26,6 @@ private :
 	UPROPERTY()
 	class UInventoryWnd* InventoryWnd;
 
-
 private :
 	// 장착중인 아이템들을 나타냅니다.
 	TMap<EEquipItemType, FName> EquipItems;
@@ -38,7 +38,6 @@ private :
 
 	// 소지중인 아이템들을 나타냅니다.
 	TArray<FItemSlotInfo> InventoryItems;
-
 
 public:	
 	UPlayerInventoryComponent();
@@ -95,5 +94,4 @@ public :
 
 	FORCEINLINE const TArray<FItemSlotInfo>& GetInventoryItems() const
 	{ return InventoryItems; }
-
 };

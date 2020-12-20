@@ -10,7 +10,7 @@ struct ARPG_API FItemSlotInfo
 {
 	GENERATED_USTRUCT_BODY()
 
-public :
+public:
 	// 아이템 코드
 	UPROPERTY()
 	FName ItemCode;
@@ -26,4 +26,5 @@ public :
 	// 해당 슬롯이 비어있는지 확인합니다.
 	FORCEINLINE bool IsEmpty() const
 	{ return ItemCode == FName(TEXT("None")); }
+
 };

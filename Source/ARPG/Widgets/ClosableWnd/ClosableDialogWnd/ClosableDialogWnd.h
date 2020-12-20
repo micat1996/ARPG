@@ -25,6 +25,6 @@ public :
 
 	// 상점을 엽니다.
 	UFUNCTION(BlueprintCallable)
-	void OpenShop(FName shopID);
+	class UClosableWnd* OpenShop(FName shopID);
 	
 };

@@ -38,8 +38,6 @@ protected :
 	class UClosableWndControllerComponent* ClosableWndController;
 
 protected :
-	virtual void NativeOnInitialized() override;
-
 	virtual void NativeConstruct() override;
 
 public :
@@ -68,7 +66,7 @@ public :
 	FORCEINLINE void SetClosableWndContorllerComponent(class UClosableWndControllerComponent* closableWndController)
 	{ ClosableWndController = closableWndController; }
 
-	FORCEINLINE class UClosableWndControllerComponent* GetClosableWndControllerComponent() const
+	FORCEINLINE class UClosableWndControllerComponent * GetClosableWndControllerComponent() const
 	{ return ClosableWndController; }
 
 	UFUNCTION(BlueprintCallable)

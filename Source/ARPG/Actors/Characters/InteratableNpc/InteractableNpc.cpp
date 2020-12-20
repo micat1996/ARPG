@@ -3,25 +3,26 @@
 #include "Single/GameInstance/ARPGGameInstance.h"
 #include "Single/PlayerManager/PlayerManager.h"
 
-#include "Structures/ShopInfo/ShopInfo.h"
-
 #include "Widgets/ClosableWnd/ClosableDialogWnd/ClosableDialogWnd.h"
-#include "Widgets/ClosableWnd/DraggableWnd/ShopWnd/ShopWnd.h"
+#include "Widgets/ClosableWnd/ShopWnd/ShopWnd.h"
+
+#include "Structures/ShopInfo/ShopInfo.h"
 
 #include "Components/ClosableWndController/ClosableWndControllerComponent.h"
 
 
 AInteractableNpc::AInteractableNpc()
 {
-	static ConstructorHelpers::FObjectFinder<UDataTable> DT_SHOP_INFO(
+	static ConstructorHelpers::FObjectFinder<UDataTable> ST_SHOP_INFO(
 		TEXT("DataTable'/Game/Resources/DataTables/DT_ShopInfo.DT_ShopInfo'"));
-	if (DT_SHOP_INFO.Succeeded()) DT_ShopInfo = DT_SHOP_INFO.Object;
-	else { UE_LOG(LogTemp, Error, TEXT("ClosableDialogWnd.cpp :: %d LINE :: DT_SHOP_INFO is not loaded!"), __LINE__); }
+	if (ST_SHOP_INFO.Succeeded()) DT_ShopInfo = ST_SHOP_INFO.Object;
+	else { UE_LOG(LogTemp, Error, TEXT("IInteractableNpc.cpp :: %d LINE :: ST_SHOP_INFO is not loaded!"), __LINE__); }
 
 	static ConstructorHelpers::FClassFinder<UShopWnd> BP_SHOP_WND(
 		TEXT("WidgetBlueprint'/Game/Resources/Blueprints/Widgets/ClosableWnd/DraggableWidget/ShopWnd/BP_ShopWnd.BP_ShopWnd_C'"));
 	if (BP_SHOP_WND.Succeeded()) ShopWndClass = BP_SHOP_WND.Class;
-	else { UE_LOG(LogTemp, Error, TEXT("ClosableDialogWnd.cpp :: %d LINE :: BP_SHOP_WND is not loaded!"), __LINE__); }
+	else { UE_LOG(LogTemp, Error, TEXT("IInteractableNpc.cpp :: %d LINE :: BP_SHOP_WND is not loaded!"), __LINE__); }
+
 
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SKELETAL_MESH_COMPONENT"));
 	InteractCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("INTERACT_CAMERA"));
@@ -83,7 +84,15 @@ void AInteractableNpc::Interaction()
 	OpenDialogWidget();
 }
 
-void AInteractableNpc::OpenShop(class UClosableWnd* parentWnd, FName shopID)
+UClosableWnd* AInteractableNpc::OpenShop(class UClosableWnd* parentWnd, FName shopID)
 {
-	parentWnd->CreateChildClosableWnd(ShopWndClass);
+	// shopID 와 일치하는 상점 정보를 저장합니다.
+	FString contextString;
+	FShopInfo * shopInfo = DT_ShopInfo->FindRow<FShopInfo>(shopID, contextString);
+
+	UShopWnd* shopWnd = Cast<UShopWnd>(parentWnd->CreateChildClosableWnd(ShopWndClass));
+
+	shopWnd->InitializeSaleList(shopInfo->SaleItems);
+
+	return shopWnd;
 }

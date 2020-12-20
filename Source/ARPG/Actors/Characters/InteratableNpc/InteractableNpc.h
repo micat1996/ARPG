@@ -8,12 +8,9 @@ class ARPG_API AInteractableNpc : public AInteractableActor
 {
 	GENERATED_BODY()
 
-private:
+private :
 	class UDataTable* DT_ShopInfo;
 	TSubclassOf<class UShopWnd> ShopWndClass;
-
-
-
 
 private :
 	UPROPERTY()
@@ -46,7 +43,7 @@ public :
 	virtual void Interaction() override;
 
 	// 상점을 엽니다.
-	void OpenShop(class UClosableWnd * parentWnd, FName shopID);
+	class UClosableWnd* OpenShop(class UClosableWnd* parentWnd, FName shopID);
 
 	
 };

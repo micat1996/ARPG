@@ -1,8 +1,6 @@
 #include "ClosableDialogWnd.h"
 
 #include "Actors/Characters/InteratableNpc/InteractableNpc.h"
-
-
 #include "Components/Button.h"
 
 void UClosableDialogWnd::SetOwnerNpc(AInteractableNpc* ownerNpc)
@@ -15,7 +13,8 @@ void UClosableDialogWnd::SetOwnerNpc(AInteractableNpc* ownerNpc)
 
 }
 
-void UClosableDialogWnd::OpenShop(FName shopID)
+
+UClosableWnd* UClosableDialogWnd::OpenShop(FName shopID)
 {
-	OwnerNpc->OpenShop(this, shopID);
+	return OwnerNpc->OpenShop(this, shopID);
 }

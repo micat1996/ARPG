@@ -7,8 +7,8 @@
 
 #include "Components/ClosableWndController/ClosableWndControllerComponent.h"
 
-#include "Widgets/ClosableWnd/DraggableWnd/InventoryWnd/InventoryWnd.h"
-#include "Widgets/ClosableWnd/DraggableWnd/InventoryWnd/ItemSlot/ItemSlot.h"
+#include "Widgets/ClosableWnd/InventoryWnd/InventoryWnd.h"
+#include "Widgets/ClosableWnd/InventoryWnd/ItemSlot/ItemSlot.h"
 
 #include "Single/GameInstance/ARPGGameInstance.h"
 #include "Single/PlayerManager/PlayerManager.h"
@@ -34,7 +34,6 @@ UPlayerInventoryComponent::UPlayerInventoryComponent()
 void UPlayerInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	InitializeEquipItems();
 	InitializeInventoryItems();
 
@@ -62,15 +61,18 @@ void UPlayerInventoryComponent::InitializeEquipItems()
 void UPlayerInventoryComponent::InitializeInventoryItems()
 {
 	UPlayerManager* playerManager = GetManager(UPlayerManager);
-	FPlayerInfo * playerInfo = playerManager->GetPlayerInfo();
+	FPlayerInfo* playerInfo = playerManager->GetPlayerInfo();
 
 	for (int32 i = 0; i < playerInfo->InventorySlotCount; ++i)
 		InventoryItems.Add(FItemSlotInfo());
 
-
-	//  -- TEST CODE --
+	// -- TEST CODE --
 	InventoryItems[0] = FItemSlotInfo(FName(TEXT("20000")), 11);
-	InventoryItems[5] = FItemSlotInfo(FName(TEXT("20005")), 7);
+	InventoryItems[2] = FItemSlotInfo(FName(TEXT("20001")), 12);
+	InventoryItems[5] = FItemSlotInfo(FName(TEXT("20002")), 13);
+	InventoryItems[6] = FItemSlotInfo(FName(TEXT("20003")), 14);
+	InventoryItems[7] = FItemSlotInfo(FName(TEXT("20004")), 15);
+	InventoryItems[8] = FItemSlotInfo(FName(TEXT("20005")), 16);
 }
 
 void UPlayerInventoryComponent::OpenInventory()
@@ -80,6 +82,7 @@ void UPlayerInventoryComponent::OpenInventory()
 
 	// 인벤토리 컴포넌트를 설정합니다.
 	InventoryWnd->InitializeInventoryWnd(this);
+
 }
 
 void UPlayerInventoryComponent::CloseInventory()
@@ -89,8 +92,6 @@ void UPlayerInventoryComponent::CloseInventory()
 	InventoryWnd = nullptr;
 }
 
-
-// 장비 아이템 Mesh 를 갱신합니다.
 void UPlayerInventoryComponent::UpdateEquipItemMesh(EEquipItemType equipitemType,
 	class USkeletalMeshComponent* refSkMeshToUpdate,
 	class USkeletalMeshComponent* refSetSkMeshToUpdate)
@@ -161,7 +162,8 @@ EReinforceResult UPlayerInventoryComponent::TryReinforce(EEquipItemType itemType
 	return EReinforceResult::RF_Fail;
 }
 
-void UPlayerInventoryComponent::SwapItem(UItemSlot* firstItemSlot, UItemSlot* secondItemSlot)
+void UPlayerInventoryComponent::SwapItem(
+	UItemSlot* firstItemSlot, UItemSlot* secondItemSlot)
 {
 	auto tempItemInfo = firstItemSlot->GetItemSlotInfo();
 	firstItemSlot->SetItemSlotInfo(secondItemSlot->GetItemSlotInfo());
@@ -170,4 +172,3 @@ void UPlayerInventoryComponent::SwapItem(UItemSlot* firstItemSlot, UItemSlot* se
 	firstItemSlot->UpdateItemSlot();
 	secondItemSlot->UpdateItemSlot();
 }
-
