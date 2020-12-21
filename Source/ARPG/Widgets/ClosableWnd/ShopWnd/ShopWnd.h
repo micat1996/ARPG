@@ -52,7 +52,7 @@ public :
 	void InitializeSaleList(TArray<FShopItemInfo> saleItems);
 
 	// ¹°°Ç ±³È¯ Ã¢À» ¶ç¿ó´Ï´Ù.
-	void CreateTradeWnd(EShopItemType shopItemType, FItemInfo itemInfo, int32 costs);
+	void CreateTradeWnd(EShopItemType shopItemType, FItemInfo* itemInfo, int32 costs);
 
 public :
 	FORCEINLINE bool IsTradeWndActivated() const

@@ -33,6 +33,9 @@ void UShopTradeWnd::NativeConstruct()
 
 void UShopTradeWnd::InitializeTradeWnd(EShopItemType itemType, FItemInfo* itemInfo, int32 costs, int32 maxTradeCount)
 {
+	// 가격 설정
+	Price = costs;
+
 	// 인벤토리 아이템이라면
 	if (itemType == EShopItemType::SI_InventoryItem)
 		// 최대 판매 가능 개수를 소지중인 아이템 개수로 설정합니다.
@@ -62,9 +65,22 @@ void UShopTradeWnd::OnTradeCountChanged(const FText& text)
 	// 만약 입력되어있는 문자열이 숫자가 아니라면 이전 입력 값으로 변경합니다.
 	if (!text.IsNumeric())
 	{
-		EditableTextBox_TradeCount->SetText(prevText);
+		// 입력된 문자열이 존재하지 않는다면
+		if (prevText.IsEmpty())
+		{
+			EditableTextBox_TradeCount->SetText(FText());
+		}
+		else
+		{
+			EditableTextBox_TradeCount->SetText(FText::FromString(TEXT("0")));
+		}
+		Text_Costs->SetText(FText::FromString(
+			FString(TEXT("합계 0원"))
+		));
+
 		return;
 	}
+
 
 	// 입력된 문자열을 숫자로 변경합니다.
 	int32 textToInt = FCString::Atoi(*prevText.ToString());
@@ -73,9 +89,16 @@ void UShopTradeWnd::OnTradeCountChanged(const FText& text)
 	if (textToInt > MaxTradeCount)
 	{
 		textToInt = MaxTradeCount;
-
-		EditableTextBox_TradeCount->SetText(
-			FText::FromString(FString::FromInt(textToInt))
-		);
 	}
+
+	EditableTextBox_TradeCount->SetText(
+		FText::FromString(FString::FromInt(textToInt))
+	);
+
+	// 가격을 표시합니다.
+	Text_Costs->SetText(FText::FromString(
+		FString(TEXT("합계 ")) +
+		FString::FromInt(textToInt * Price) +
+		FString(TEXT("원"))
+	));
 }

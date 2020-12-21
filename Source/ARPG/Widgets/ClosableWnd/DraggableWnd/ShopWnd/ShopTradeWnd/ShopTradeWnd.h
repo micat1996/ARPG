@@ -17,8 +17,10 @@ class ARPG_API UShopTradeWnd : public UDraggableWnd
 
 private :
 	// 최대 구매 / 판매 가능 아이템 개수를 나타냅니다.
-	UPROPERTY()
 	int32 MaxTradeCount;
+
+	int32 Price;
+
 
 	class UTextBlock* Text_ItemName;
 	class UTextBlock* Text_Q;

@@ -111,8 +111,10 @@ void UShopWnd::InitializeSaleList(TArray<FShopItemInfo> saleItems)
 	}
 }
 
-void UShopWnd::CreateTradeWnd(EShopItemType shopItemType, FItemInfo itemInfo, int32 costs)
+void UShopWnd::CreateTradeWnd(EShopItemType shopItemType, FItemInfo* itemInfo, int32 costs)
 {
+	// 물건 교환 창이 열려있을 경우 실행하지 않습니다.
+	if (bIsTradeWndActivated) return;
 
 	bIsTradeWndActivated = true;
 
@@ -124,5 +126,5 @@ void UShopWnd::CreateTradeWnd(EShopItemType shopItemType, FItemInfo itemInfo, in
 		(Cast<UCanvasPanelSlot>(Slot)->GetSize() * 0.5f) - 
 		(Cast<UCanvasPanelSlot>(shopTradeWnd->Slot)->GetSize() * 0.5f));
 
-	shopTradeWnd->InitializeTradeWnd(shopItemType, &itemInfo, costs);
+	shopTradeWnd->InitializeTradeWnd(shopItemType, itemInfo, costs);
 }

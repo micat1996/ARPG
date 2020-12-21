@@ -18,7 +18,7 @@ private :
 	class UShopWnd* ShopWnd;
 	FItemInfo ItemInfo;
 	EShopItemType ShopItemType;
-	int32 ItemCosts;
+	int32 ItemPrice;
 
 	class UImage* Image_ItemSprite;
 	class UTextBlock* Text_ItemCount;

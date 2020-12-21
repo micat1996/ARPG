@@ -31,7 +31,7 @@ void USaleItem::InitializeSaleItem(EShopItemType shopItemType, FItemInfo itemInf
 	ShopItemType = shopItemType;
 
 	// 상점 아이템 가격 설정
-	ItemCosts = costs;
+	ItemPrice = costs;
 
 	// 아이템 이미지 설정
 	Image_ItemSprite->SetBrushFromTexture(itemImage);
@@ -59,7 +59,7 @@ void USaleItem::OnSaleOrBuyButtonClicked()
 	// 물건 교환 창이 열려있지 않다면
 	if (!ShopWnd->IsTradeWndActivated())
 	{
-		ShopWnd->CreateTradeWnd(ShopItemType , ItemInfo, ItemCosts);
+		ShopWnd->CreateTradeWnd(ShopItemType , &ItemInfo, ItemPrice);
 	}
 
 }
