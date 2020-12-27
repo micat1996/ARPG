@@ -65,15 +65,8 @@ void UShopTradeWnd::OnTradeCountChanged(const FText& text)
 	// 만약 입력되어있는 문자열이 숫자가 아니라면 이전 입력 값으로 변경합니다.
 	if (!text.IsNumeric())
 	{
-		// 입력된 문자열이 존재하지 않는다면
-		if (prevText.IsEmpty())
-		{
-			EditableTextBox_TradeCount->SetText(FText());
-		}
-		else
-		{
-			EditableTextBox_TradeCount->SetText(FText::FromString(TEXT("0")));
-		}
+		EditableTextBox_TradeCount->SetText(FText::FromString(TEXT("0")));
+		
 		Text_Costs->SetText(FText::FromString(
 			FString(TEXT("합계 0원"))
 		));
