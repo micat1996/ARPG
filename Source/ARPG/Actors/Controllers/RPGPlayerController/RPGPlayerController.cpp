@@ -7,6 +7,9 @@
 
 #include "Widgets/CharacterWidget/HpableCharacterWidget/PlayerCharacterWidget/PlayerCharacterWidget.h"
 
+#include "Single/GameInstance/ARPGGameInstance.h"
+
+
 ARPGPlayerController::ARPGPlayerController()
 {
 	static ConstructorHelpers::FClassFinder<UPlayerCharacterWidget> WIDGET_BP_GAME(
@@ -28,6 +31,7 @@ void ARPGPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 	GetPlayerCharacterWidgetInstance();
+
 }
 
 void ARPGPlayerController::InputMouseX(float axis)

@@ -44,6 +44,7 @@ public :
 	void InitializeInventoryWnd(class UPlayerInventoryComponent * playerInventory);
 
 	// 인벤토리 슬롯들을 갱신합니다.
+	UFUNCTION()
 	void UpdateInventorySlots();
 
 public :

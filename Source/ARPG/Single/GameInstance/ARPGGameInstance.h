@@ -11,15 +11,33 @@
 
 #include "ARPGGameInstance.generated.h"
 
+#ifndef GAME_INSTANCE
+#define GAME_INSTANCE
+#define GetGameInst() (Cast<UARPGGameInstance>(GetWorld()->GetGameInstance()))
+#endif
+
+DECLARE_MULTICAST_DELEGATE(FOpenLevelEvent)
+
+
 UCLASS()
 class ARPG_API UARPGGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
+public :
+	FOpenLevelEvent StartOpenLevel;
+
 private :
 	// 등록한 매니저 클래스 인스턴스를 저장할 배열
 	TArray<UManagerClass*> ManagerClasses;
 
+	// 다음으로 로드할 레벨 이름을 저장합니다.
+	UPROPERTY()
+	FName NextLevelName;
+
+public :
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsLevelLoaded;
 
 private :
 	// ManagerClass 를 등록시킵니다.
@@ -37,6 +55,10 @@ private :
 
 public :
 	virtual void Init() override;
+
+	virtual void Shutdown() override;
+
+	virtual void BeginDestroy() override;
 
 	// 등록한 ManagerClass 를 얻습니다.
 	template<typename ManagerClassType>
@@ -61,5 +83,12 @@ public :
 	FORCEINLINE FStreamableManager* GetStreamableManager()
 	{ return &UAssetManager::GetStreamableManager(); }
 
+	FORCEINLINE void SetNextLevelName(FName nextLevelName)
+	{ NextLevelName = nextLevelName; }
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE FName GetNextLevelName() const
+	{ return NextLevelName; }
 
+	UFUNCTION(BlueprintCallable)
+	void BroadcastOpenLevelEvent();
 };

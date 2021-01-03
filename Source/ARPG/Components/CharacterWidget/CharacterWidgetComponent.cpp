@@ -29,13 +29,20 @@ void UCharacterWidgetComponent::TickComponent(
 
 void UCharacterWidgetComponent::DistanceToggle()
 {
+
+	auto gameInst = GetGameInst();
+	if (!IsValid(gameInst)) return;
+	if (!gameInst->bIsLevelLoaded) return;
+
+
 	if (!IsValid(PlayerCamera))
 	{
-		UARPGGameInstance* gameInst = Cast<UARPGGameInstance>(GetWorld()->GetGameInstance());
+		UPlayerManager* playerManager = GetManager(UPlayerManager);
 
-		if (!IsValid(gameInst)) return;
+		if (!IsValid(playerManager->GetPlayerController())) return;
+		if (!IsValid(playerManager->GetPlayerController()->GetPawn())) return;
 
-		UPlayerManager* playerManager = gameInst->GetManagerClass<UPlayerManager>();
+		if (!IsValid(Cast<ARPGCharacter>(playerManager->GetPlayerController()->GetPawn()))) return;
 
 		PlayerCamera = Cast<ARPGCharacter>(playerManager->GetPlayerController()->GetPawn())->GetCameraComponent();
 		return;
@@ -64,3 +71,4 @@ void UCharacterWidgetComponent::SetWidgetHeight(float widgetHeight)
 {
 	SetRelativeLocation(FVector::UpVector * widgetHeight);
 }
+ 

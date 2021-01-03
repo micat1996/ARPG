@@ -1,12 +1,4 @@
 #include "BaseCharacter.h"
-
-void ABaseCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	OnTakeAnyDamage.AddDynamic(this, &ABaseCharacter::OnTakeDamage);
-}
-
 void ABaseCharacter::OnTakeDamage(
 	AActor* DamagedActor,
 	float Damage,

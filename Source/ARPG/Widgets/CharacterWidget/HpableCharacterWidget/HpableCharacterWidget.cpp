@@ -2,6 +2,8 @@
 #include "Actors/Characters/BaseCharacter.h"
 #include "Components/ProgressBar.h"
 
+#include "Single/GameInstance/ARPGGameInstance.h"
+
 void UHpableCharacterWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -17,6 +19,7 @@ void UHpableCharacterWidget::InitializeWidget(ABaseCharacter* ownerCharacter)
 
 void UHpableCharacterWidget::UpdateHp()
 {
+
 	if (!IsValid(OwnerCharacter))
 	{
 		UE_LOG(LogTemp, Error, TEXT("HpableCharacterWidget.cpp :: %d LINE :: OwnerCharacter is not valid!"), __LINE__);

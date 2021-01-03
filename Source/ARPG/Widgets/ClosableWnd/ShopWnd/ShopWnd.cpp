@@ -33,7 +33,6 @@ UShopWnd::UShopWnd(const FObjectInitializer& ObjInitializer) :
 		TEXT("WidgetBlueprint'/Game/Resources/Blueprints/Widgets/ClosableWnd/DraggableWidget/ShopWnd/BP_ShopTradeWnd.BP_ShopTradeWnd_C'"));
 	if (BP_SHOP_TRADE_WND.Succeeded()) ShopTradeWndClass = BP_SHOP_TRADE_WND.Class;
 	else { UE_LOG(LogTemp, Error, TEXT("ShopWnd.cpp :: %d LINE :: BP_SHOP_TRADE_WND is not loaded!"), __LINE__); }
-
 }
 
 void UShopWnd::NativeConstruct()
@@ -46,11 +45,20 @@ void UShopWnd::NativeConstruct()
 	ScrollBox_SaleList = Cast<UScrollBox>(GetWidgetFromName(TEXT("ScrollBox_SaleList")));
 	ScrollBox_InventoryItem = Cast<UScrollBox>(GetWidgetFromName(TEXT("ScrollBox_InventoryItem")));
 
+
+	UPlayerInventoryComponent* playerInventory = Cast<ARPGCharacter>(GetManager(UPlayerManager)->
+		GetPlayerController()->GetPawn())->GetPlayerInventory();
+
+	auto hDelegate = playerInventory->OnInventorySlotChanged.AddUObject(
+		this, &UShopWnd::OnInventorySlotChanged);
+	onWndClosed.AddLambda([=]() { playerInventory->OnInventorySlotChanged.Remove(hDelegate); });
+
 	// 소지 아이템 초기화
 	InitializeInventoryItem();
 }
 
-void UShopWnd::AddItem(EShopItemType shopItemType, FName itemCode, int32 costs, int32 itemCount)
+void UShopWnd::AddItem(EShopItemType shopItemType, FName itemCode, 
+	int32 costs, int32 itemCount, int32 inventorySlotIndex)
 {
 	// 판매 아이템 위젯을 생성합니다.
 	USaleItem* saleItem = CreateWidget<USaleItem>(this, SaleItemClass);
@@ -61,6 +69,9 @@ void UShopWnd::AddItem(EShopItemType shopItemType, FName itemCode, int32 costs, 
 
 	// ScrollBox 에 추가합니다.
 	scrollBox->AddChild(saleItem);
+
+	if (shopItemType == EShopItemType::SI_InventoryItem)
+		InventoryItemSlots.Add(saleItem);
 
 	// Shop Wnd 설정
 	saleItem->SetShopWnd(this);
@@ -76,7 +87,7 @@ void UShopWnd::AddItem(EShopItemType shopItemType, FName itemCode, int32 costs, 
 	UTexture2D* itemSprite = Cast<UTexture2D>(gameInst->GetStreamableManager()->LoadSynchronous(itemInfo->ItemSpritePath));
 
 	// 판매 아이템 위젯을 초기화합니다.
-	saleItem->InitializeSaleItem(shopItemType, *itemInfo, itemSprite, itemCount, costs);
+	saleItem->InitializeSaleItem(shopItemType, *itemInfo, itemSprite, itemCount, itemInfo->ItemName, costs, inventorySlotIndex);
 }
 
 void UShopWnd::InitializeInventoryItem()
@@ -84,20 +95,36 @@ void UShopWnd::InitializeInventoryItem()
 	UPlayerInventoryComponent* playerInventory = Cast<ARPGCharacter>(GetManager(UPlayerManager)->
 		GetPlayerController()->GetPawn())->GetPlayerInventory();
 
-	for (auto inventoryItem : playerInventory->GetInventoryItems())
+	for (int32 i = 0; i < playerInventory->GetInventoryItems().Num(); ++i)
 	{
+		// 인벤토리 아이템 정보를 저장할 변수
+		FItemSlotInfo inventoryItem = playerInventory->GetInventoryItems()[i];
+
 		if (!inventoryItem.IsEmpty())
 		{ 
 			FString contextString;
 			FItemInfo* itemInfo = DT_ItemInfo->FindRow<FItemInfo>(inventoryItem.ItemCode, contextString);
 
 			AddItem(
-				/*shopItemType	= */ EShopItemType::SI_InventoryItem,
-				/*itemCode		= */ itemInfo->ItemCode,
-				/*costs			= */ itemInfo->SalePrice,
-				/*itemCount		= */ inventoryItem.ItemCount);
+				/*shopItemType			= */ EShopItemType::SI_InventoryItem,
+				/*itemCode				= */ itemInfo->ItemCode,
+				/*costs					= */ itemInfo->SalePrice,
+				/*itemCount				= */ inventoryItem.ItemCount,
+				/*inventorySlotIndex	= */ i);
 		}
 	}
+}
+
+void UShopWnd::OnInventorySlotChanged()
+{
+	for (auto inventoryItemSlot : InventoryItemSlots)
+	{
+		ScrollBox_InventoryItem->RemoveChild(inventoryItemSlot);
+	}
+
+	InventoryItemSlots.Empty();
+
+	InitializeInventoryItem();
 }
 
 void UShopWnd::InitializeSaleList(TArray<FShopItemInfo> saleItems)
@@ -107,24 +134,33 @@ void UShopWnd::InitializeSaleList(TArray<FShopItemInfo> saleItems)
 		AddItem(
 			/*shopItemType	= */ EShopItemType::SI_SaleItem, 
 			/*itemCode		= */ saleIteminfo.ItemCode, 
-			/*costs			= */ saleIteminfo.Costs);
+			/*costs			= */ saleIteminfo.Costs, 
+			/*itemCount		= */ 1);
 	}
 }
 
-void UShopWnd::CreateTradeWnd(EShopItemType shopItemType, FItemInfo* itemInfo, int32 costs)
+UShopTradeWnd* UShopWnd::CreateTradeWnd(USaleItem* saleItemWidget, 
+	EShopItemType shopItemType, FItemInfo* itemInfo, int32 costs)
 {
 	// 물건 교환 창이 열려있을 경우 실행하지 않습니다.
-	if (bIsTradeWndActivated) return;
+	if (bIsTradeWndActivated) return nullptr;
 
 	bIsTradeWndActivated = true;
 
 	UShopTradeWnd* shopTradeWnd = Cast<UShopTradeWnd>(CreateChildClosableWnd(ShopTradeWndClass));
 	shopTradeWnd->onWndClosed.AddLambda([this]() { bIsTradeWndActivated = false; });
-	
+
+
 	Cast<UCanvasPanelSlot>(shopTradeWnd->Slot)->SetPosition(
 		Cast<UCanvasPanelSlot>(Slot)->GetPosition() +
-		(Cast<UCanvasPanelSlot>(Slot)->GetSize() * 0.5f) - 
+		(Cast<UCanvasPanelSlot>(Slot)->GetSize() * 0.5f) -
 		(Cast<UCanvasPanelSlot>(shopTradeWnd->Slot)->GetSize() * 0.5f));
 
-	shopTradeWnd->InitializeTradeWnd(shopItemType, itemInfo, costs);
+	if (shopItemType == EShopItemType::SI_SaleItem)
+		shopTradeWnd->InitializeTradeWnd(shopItemType, itemInfo, costs);
+	else
+		shopTradeWnd->InitializeTradeWnd(shopItemType, itemInfo, costs, 
+			saleItemWidget->GetInventoryItemCount());
+
+	return shopTradeWnd;
 }

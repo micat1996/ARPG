@@ -27,4 +27,14 @@ public :
 	FORCEINLINE bool IsEmpty() const
 	{ return ItemCode == FName(TEXT("None")); }
 
+	// 아이템 개수를 증가시킵니다.
+	FORCEINLINE void AddItemCount(int32 count)
+	{ ItemCount += count; }
+
+	FORCEINLINE bool operator==(const FItemSlotInfo& itemSlotInfo) const
+	{ return (ItemCode == itemSlotInfo.ItemCode) && ItemCount == itemSlotInfo.ItemCount; }
+	
+	FORCEINLINE bool operator!=(const FItemSlotInfo& itemSlotInfo) const
+	{ return (ItemCode != itemSlotInfo.ItemCode) || ItemCount != itemSlotInfo.ItemCount; }
+
 };

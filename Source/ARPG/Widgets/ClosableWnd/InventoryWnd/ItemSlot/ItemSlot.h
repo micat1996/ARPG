@@ -26,6 +26,8 @@ private :
 
 	class UTexture2D* EmptyTextrue;
 
+	class UTextBlock* Text_ItemCount;
+
 	FLinearColor NormalSlotColor;
 	FLinearColor DraggingSlotColor;
 

@@ -43,6 +43,9 @@ void AEnemyCharacter::BeginPlay()
 	EnemyWidget->GetEnemyWidgetInstance()->SetNameText(GetEnemyData()->EnemyName);
 	EnemyWidget->GetEnemyWidgetInstance()->UpdateHp();
 
+
+	OnTakeAnyDamage.AddDynamic(this, &AEnemyCharacter::OnTakeDamage);
+
 	Tags.Add(TEXT("Enemy"));
 }
 

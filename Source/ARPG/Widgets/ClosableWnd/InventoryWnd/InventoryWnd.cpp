@@ -42,6 +42,10 @@ void UInventoryWnd::InitializeInventoryWnd(class UPlayerInventoryComponent* play
 
 	// ½½·Ô °»½Å
 	UpdateInventorySlots();
+
+	auto hDelegate = PlayerInventory->OnInventorySlotChanged.AddUObject(
+		this, &UInventoryWnd::UpdateInventorySlots);
+	onWndClosed.AddLambda([=]() { PlayerInventory->OnInventorySlotChanged.Remove(hDelegate); });
 }
 
 void UInventoryWnd::UpdateInventorySlots()

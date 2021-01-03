@@ -59,7 +59,7 @@ protected :
 
 public :
 	UFUNCTION()
-	void CloseClosableWnd();
+	void OnCloseButtonClicked();
 
 public :
 	FORCEINLINE void SetClosableWndContorllerComponent(class UClosableWndControllerComponent* closableWndController)

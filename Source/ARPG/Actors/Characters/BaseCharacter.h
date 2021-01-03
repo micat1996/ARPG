@@ -13,9 +13,6 @@ protected :
 	UPROPERTY()
 	bool bIsDie;
 
-protected:
-	virtual void BeginPlay() override;
-
 public :
 	virtual float GetMaxHp()		PURE_VIRTUAL(ABaseCharacter::GetMaxHp, return 0.0f;);
 	virtual float GetHp()			PURE_VIRTUAL(ABaseCharacter::GetHp, return 0.0f;);
@@ -23,7 +20,6 @@ public :
 
 protected :
 	// 피해를 입었을 경우 호출될 메서드
-	UFUNCTION()
 	virtual void OnTakeDamage(
 		AActor* DamagedActor, 
 		float Damage, 

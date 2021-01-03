@@ -23,7 +23,6 @@ AInteractableNpc::AInteractableNpc()
 	if (BP_SHOP_WND.Succeeded()) ShopWndClass = BP_SHOP_WND.Class;
 	else { UE_LOG(LogTemp, Error, TEXT("IInteractableNpc.cpp :: %d LINE :: BP_SHOP_WND is not loaded!"), __LINE__); }
 
-
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SKELETAL_MESH_COMPONENT"));
 	InteractCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("INTERACT_CAMERA"));
 

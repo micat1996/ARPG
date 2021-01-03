@@ -1,6 +1,7 @@
 #include "RPGCharacter.h"
 
 #include "Actors/Controllers/RPGPlayerController/RPGPlayerController.h"
+#include "Actors/InteractableActor/WorldItem/WorldItem.h"
 
 #include "Widgets/CharacterWidget/HpableCharacterWidget/PlayerCHaracterWidget/PlayerCharacterWidget.h"
 
@@ -10,6 +11,7 @@
 #include "Components/PlayerInventory/PlayerInventoryComponent.h"
 
 #include "Structures/PlayerInfo/PlayerInfo.h"
+#include "Structures/ItemSlotInfo/ItemSlotInfo.h"
 
 #include "Single/GameInstance/ARPGGameInstance.h"
 #include "Single/PlayerManager/PlayerManager.h"
@@ -60,7 +62,10 @@ ARPGCharacter::ARPGCharacter()
 void ARPGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+
+	auto gameInst = GetGameInst();
+	UE_LOG(LogTemp, Warning, TEXT("gameInst -> bIsLevelLoaded = %d"), gameInst->bIsLevelLoaded);
 
 	OnRollinngMoveFinished.BindLambda([this]() -> void
 		{
@@ -76,6 +81,18 @@ void ARPGCharacter::BeginPlay()
 
 	// 모든 파츠 갱신
 	UpdateEquipItemMesh(true);
+
+	OnTakeAnyDamage.AddDynamic(this, &ARPGCharacter::OnTakeDamage);
+
+	TArray<FItemSlotInfo> items = { 
+		FItemSlotInfo(FName(TEXT("20000")), 2),
+		FItemSlotInfo(FName(TEXT("20001")), 3),
+		FItemSlotInfo(FName(TEXT("20002")), 4),
+		FItemSlotInfo(FName(TEXT("20003")), 5),
+	};
+	AWorldItem::SpawnItem(this, items, GetActorLocation(), GetActorRotation());
+
+	Tags.Add(TEXT("Player"));
 }
 
 void ARPGCharacter::OnTakeDamage(
@@ -370,7 +387,7 @@ float ARPGCharacter::GetMaxHp()
 { return GetPlayerManager()->GetPlayerInfo()->MaxHp; }
 
 float ARPGCharacter::GetHp()
-{ return GetPlayerManager()->GetPlayerInfo()->Hp; }
+{  return GetPlayerManager()->GetPlayerInfo()->Hp;  }
 
 void ARPGCharacter::SetHp(float value)
 { GetPlayerManager()->GetPlayerInfo()->Hp = value; }

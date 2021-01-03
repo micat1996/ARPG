@@ -12,6 +12,7 @@
 #include "ItemSlotDragDropOperation.h"
 
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/ClosableWndController/ClosableWndControllerComponent.h"
 #include "Components/PlayerInventory/PlayerInventoryComponent.h"
@@ -52,6 +53,7 @@ void UItemSlot::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	Image_ItemSprite = Cast<UImage>(GetWidgetFromName(TEXT("Image_ItemSprite")));
+	Text_ItemCount = Cast<UTextBlock>(GetWidgetFromName(TEXT("Text_ItemCount")));
 }
 
 FReply UItemSlot::NativeOnMouseButtonDown(
@@ -184,6 +186,9 @@ void UItemSlot::UpdateItemSlot()
 	if (itemSlotInfo.IsEmpty())
 	{
 		Image_ItemSprite->SetBrushFromTexture(EmptyTextrue);
+
+		// 개수 텍스트 설정
+		Text_ItemCount->SetText(FText::FromString(TEXT("")));
 	}
 
 	// 슬롯이 비어있지 않다면
@@ -193,6 +198,11 @@ void UItemSlot::UpdateItemSlot()
 		FString contextString;
 		FItemInfo* itemInfo = DT_ItemInfo->FindRow<FItemInfo>(
 			itemSlotInfo.ItemCode, contextString);
+
+		// 개수 텍스트 설정
+		Text_ItemCount->SetText(FText::FromString(
+			(itemSlotInfo.ItemCount == 1) ? TEXT("") : FString::FromInt(itemSlotInfo.ItemCount)
+			));
 
 		// 아이템 이미지를 로드합니다.
 		UARPGGameInstance* gameInst = Cast<UARPGGameInstance>(GetGameInstance());

@@ -28,8 +28,9 @@ void UPlayerCharacterWidget::AddClosableWnd(UClosableWnd* closableWnd)
 
 void UPlayerCharacterWidget::RemoveClosableWnd(UClosableWnd* closableWnd)
 {
-	closableWnd->RemoveFromParent();
 
 	if (closableWnd->onWndClosed.IsBound())
 		closableWnd->onWndClosed.Broadcast();
+
+	closableWnd->RemoveFromParent();
 }

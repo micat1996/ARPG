@@ -22,7 +22,7 @@ void UClosableWnd::SetCloseButton(UButton* closeButton)
 
 
 	CloseButton = closeButton;
-	CloseButton->OnClicked.AddDynamic(this, &UClosableWnd::CloseClosableWnd);
+	CloseButton->OnClicked.AddDynamic(this, &UClosableWnd::OnCloseButtonClicked);
 }
 
 UClosableWnd* UClosableWnd::CreateChildClosableWnd(TSubclassOf<UClosableWnd> closableWnd)
@@ -55,9 +55,33 @@ void UClosableWnd::RemoveFromParentWnd(UClosableWnd* childWnd)
 	ChildWnds.Remove(childWnd);
 }
 
-void UClosableWnd::CloseClosableWnd()
+void UClosableWnd::OnCloseButtonClicked()
 {
-	if (onWndClosed.IsBound()) onWndClosed.Broadcast();
+	// 자식 창이 존재한다면
+	if (ChildWnds.Num() != 0)
+	{
+		// 모든 자식 창을 제거합니다.
+		//for (auto childWnd : ChildWnds)
+		for (int32 i = 0; i < ChildWnds.Num(); ++i)
+		{
+			UClosableWnd* childWnd = ChildWnds[i];
+
+			if (IsValid(childWnd))
+			{
+				childWnd->OnCloseButtonClicked();
+
+				ClosableWndController->CloseWnd(
+					/*bAllClose :					*/	false,
+					/*closableWndInstanceToClose :	*/	childWnd);
+			}
+		}
+		ChildWnds.Empty();
+	}
+
+
+	ClosableWndController->CloseWnd(
+		/*bAllClose :					*/	false, 
+		/*closableWndInstanceToClose :	*/	this);
 
 	// 부모 창이 존재한다면
 	if (IsValid(ParentWnd))
@@ -65,20 +89,6 @@ void UClosableWnd::CloseClosableWnd()
 		// 자신을 부모 창에서 제외시킵니다.
 		ParentWnd->RemoveFromParentWnd(this);
 	}
-
-	// 모든 자식 창을 제거합니다.
-	for (auto childWnd : ChildWnds)
-	{
-		childWnd->CloseClosableWnd();
-
-		ClosableWndController->CloseWnd(
-			/*bAllClose :					*/	false,
-			/*closableWndInstanceToClose :	*/	childWnd);
-	}
-
-	ClosableWndController->CloseWnd(
-		/*bAllClose :					*/	false, 
-		/*closableWndInstanceToClose :	*/	this);
 }
 
 void UClosableWnd::UpdateWndSize(float width, float height)

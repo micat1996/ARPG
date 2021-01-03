@@ -37,15 +37,17 @@ void UClosableWndControllerComponent::CloseWnd(bool bAllClose, UClosableWnd* clo
 			closableWndInstanceToClose : 
 			AllocatedWnds[AllocatedWnds.Num() - 1];
 
-		// 지정된 창을 닫습니다.
-		AllocatedWnds.Remove(closableWndInstanceToClose);
+		if (IsValid(closableWndInstanceToClose))
+		{
+			// 지정된 창을 배열에서 제거합니다.
+			AllocatedWnds.Remove(closableWndInstanceToClose);
 
-		PlayerController->GetPlayerCharacterWidgetInstance()->RemoveClosableWnd(
-			closableWndInstanceToClose);
-
+			// 지정된 창을 화면에서 제거합니다.
+			PlayerController->GetPlayerCharacterWidgetInstance()->RemoveClosableWnd(
+				closableWndInstanceToClose);
+		}
 	}
-
-
+	
 	// 열린 창이 존재하지 않는다면
 	if (GetAllocatedWndCount() == 0)
 	{

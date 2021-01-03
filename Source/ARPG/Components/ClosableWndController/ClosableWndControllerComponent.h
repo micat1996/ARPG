@@ -39,11 +39,11 @@ public :
 
 		wndInst->SetClosableWndContorllerComponent(this);
 
-		// 배열에 추가합니다.
-		AllocatedWnds.Add(wndInst);
-
 		// 화면에 표시합니다.
 		PlayerController->GetPlayerCharacterWidgetInstance()->AddClosableWnd(wndInst);
+
+		// 배열에 추가합니다.
+		AllocatedWnds.Add(wndInst);
 
 		// 창 객체를 반환합니다.
 		return wndInst;

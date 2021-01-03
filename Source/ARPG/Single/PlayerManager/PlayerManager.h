@@ -26,11 +26,14 @@ public:
     virtual void InitManagerClass() override;
 
 public :
-    FORCEINLINE FPlayerInfo* GetPlayerInfo()
-    { return &PlayerInfo; }
+    FPlayerInfo* GetPlayerInfo();
+
+    //{ return &PlayerInfo; }
 
     class ARPGPlayerController* GetPlayerController();
 
+
+    //virtual void BeginDestroy() override; 
 
 
 
